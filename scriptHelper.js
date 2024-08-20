@@ -81,11 +81,11 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
         const launchStat = document.getElementById('launchStatus');
         const faultyListVisible = document.getElementById('faultyItems')
         if (isReady) {
-            launchStat.textContent = "Shuttle is Ready for Launch";
+            launchStat.textContent = `Shuttle is Ready for Launch`;
             launchStat.style.color = "green";
             faultyListVisible.style.visibility = 'visible'
         } else {
-            launchStat.textContent = "Shuttle Not Ready for Launch";
+            launchStat.textContent = `Shuttle Not Ready for Launch`;
             launchStat.style.color = "red";
             faultyListVisible.style.visibility = 'visible';
         }
@@ -94,19 +94,19 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
     //check fuel and cargo levels and update the status accordingly
     if (fuelLevelNum < 10000 && cargoMassNum > 10000) {
         document.getElementById("fuelStatus").textContent = `Fuel level too low for launch`;
-        document.getElementById("cargoStatus").textContent = 'Cargo mass too heavy for launch';
+        document.getElementById("cargoStatus").textContent = `Cargo mass too heavy for launch`;
         updateLaunchStatus(!isReady);
     } else if (fuelLevelNum < 10000 && cargoMassNum <= 10000) {
         document.getElementById("fuelStatus").textContent = `Fuel level too low for launch`;
-        document.getElementById("cargoStatus").textContent = 'Cargo mass low enough for launch';
+        document.getElementById("cargoStatus").textContent = `Cargo mass low enough for launch`;
         updateLaunchStatus(!isReady);
     } else if (fuelLevelNum >= 10000 && cargoMassNum > 10000) {
-        document.getElementById("fuelStatus").textContent = 'Fuel level high enough for launch';
-        document.getElementById("cargoStatus").textContent = 'Cargo mass too heavy for launch';
+        document.getElementById("fuelStatus").textContent = `Fuel level high enough for launch`;
+        document.getElementById("cargoStatus").textContent = `Cargo mass too heavy for launch`;
         updateLaunchStatus(!isReady);
     } else {
-        document.getElementById("fuelStatus").textContent = 'Fuel level high enough for launch';
-        document.getElementById("cargoStatus").textContent = 'Cargo mass low enough for launch';
+        document.getElementById("fuelStatus").textContent = `Fuel level high enough for launch`;
+        document.getElementById("cargoStatus").textContent = `Cargo mass low enough for launch`;
         updateLaunchStatus(isReady)
     };
 
