@@ -36,7 +36,8 @@ window.addEventListener("load", function () {
         selectedPlanet.star,
         selectedPlanet.distance,
         selectedPlanet.moons,
-        selectedPlanet.image);
+        selectedPlanet.image
+      );
 
     });
   });

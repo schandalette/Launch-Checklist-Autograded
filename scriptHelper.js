@@ -50,32 +50,50 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
     // validate the inputs 
     const pilotValid = validateInput(pilot);
     const copilotValid = validateInput(copilot);
-    const fuelLevelValid = validateInput(fuelLevel);
-    const cargoMassValid = validateInput(cargoMass);
+    const fuelLevelValid = validateInput(fuelLevelNum);
+    const cargoMassValid = validateInput(cargoMassNum);
 
     //alert user if invalid input and prevent form submission
-    if (pilotValid !== "Not a Number") {
-        alert('pilot name must be a non-empty string.');
-        formSubmission.preventDefault();//prevent default form submission w3school listed it as an alternative to prevetDefault() to stop form submission
+
+    if (pilotValid === "Is a Number") {
+        alert('pilot name must be a string.');
+        return false;
     }
-    if (copilotValid !== "Not a Number") {
-        alert('copilot name must be a non-empty string.');
-        formSubmission.preventDefault();
+    if (pilotValid === "Empty") {
+        alert('pilot name must contain valid input');
+        return false;
     }
-    if (fuelLevelValid !== "Is a Number") {
-        alert('fuel level must be a non-empty number.');
-        formSubmission.preventDefault()
+    if (copilotValid === "Is a Number") {
+        alert('copilot name must be a string.');
+        return false;
     }
-    if (cargoMassValid !== "Is a Number") {
-        alert('cargo mass must be a non-empty number.');
-        formSubmission.preventDefault();
+    if (copilotValid === "Empty") {
+        alert('copilot name must contain valid input');
+        return false;
     }
+    if (fuelLevelValid === "Not a Number") {
+        alert('fuel level must be a number');
+        return false;
+    }
+    if (fuelLevelValid === "Empty") {
+        alert('fuel level must contain valid input');
+        return false;
+    }
+    if (cargoMassValid === "Not a Number") {
+        alert('cargo mass must be a number');
+        return false;
+    }
+    if (cargoMassValid === "Empty") {
+        alert('cargo mass must contain valid input');
+        return false;
+    }
+
 
     //track shuttle readiness
     isReady = true;
 
     //function to update the launch status text and color and make faultyItems visible
-    //i was having trouble figuring out how to get this to work until i put it in as function
+    //i was having trouble figuring out how to get this to work until i put it in as a nested function. the color changing to red would not pass the npm test
     //returning isReady or !isReady was not working
     function updateLaunchStatus(isReady) {
         const launchStat = document.getElementById('launchStatus');
