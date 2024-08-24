@@ -2,7 +2,9 @@
 
 require("cross-fetch/polyfill");
 //using the provided HTML format populate the missionTarget div section
+
 //function to populate the missionTarget div with planet info
+//used in script.js
 function addDestinationInfo(
     document,
     name,
@@ -29,6 +31,7 @@ function addDestinationInfo(
         console.error("Element with ID 'missionTarget' not found.");
     }
 }
+
 //function to validate user input and testInput
 function validateInput(testInput) {
     //this function will be used to validate the form inputs
@@ -41,98 +44,93 @@ function validateInput(testInput) {
     }
 }
 
-//function to handle form submission and validation
+
+
+//function to handle form submission and validation. calls launchInfoUpdate function if all input is valid
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
+
+    const pilotValid = validateInput(pilot);
+    const copilotValid = validateInput(copilot);
+    const fuelLevelValid = validateInput(fuelLevel);
+    const cargoMassValid = validateInput(cargoMass);
+
+    if (pilotValid !== "Not a Number") {
+        alert(`Pilot name should not be "${pilotValid}"`);
+        return false;
+    }
+
+    if (copilotValid !== "Not a Number") {
+        alert(`Copilot name should not be "${copilotValid}"`);
+        return false;
+    }
+
+    if (fuelLevelValid !== "Is a Number") {
+        alert(`Fuel Level should not be "${fuelLevelValid}"`);
+        return false;
+    }
+
+    if (cargoMassValid !== "Is a Number") {
+        alert(`Cargo mass should not be "${cargoMassValid}"`);
+        return false;
+    }
+
+    else {
+        launchInfoUpdate(document, pilot, copilot, fuelLevel, cargoMass)
+
+    };
+
+}
+
+
+
+// function to update readiness status. calls the updateLaunchStatus function
+function launchInfoUpdate(document, pilot, copilot, fuelLevel, cargoMass) {
+
+    launchReady = true
     //convert fuel and cargo strings to numbers
     const fuelLevelNum = Number(fuelLevel);
     const cargoMassNum = Number(cargoMass);
 
-    // validate the inputs 
-    const pilotValid = validateInput(pilot);
-    const copilotValid = validateInput(copilot);
-    const fuelLevelValid = validateInput(fuelLevelNum);
-    const cargoMassValid = validateInput(cargoMassNum);
+    let fuelStat = ''
+    let cargoStat = ''
 
-    //alert user if invalid input and prevent form submission
-
-    if (pilotValid === "Is a Number") {
-        alert('pilot name must be a string.');
-        return false;
-    }
-    if (pilotValid === "Empty") {
-        alert('pilot name must contain valid input');
-        return false;
-    }
-    if (copilotValid === "Is a Number") {
-        alert('copilot name must be a string.');
-        return false;
-    }
-    if (copilotValid === "Empty") {
-        alert('copilot name must contain valid input');
-        return false;
-    }
-    if (fuelLevelValid === "Not a Number") {
-        alert('fuel level must be a number');
-        return false;
-    }
-    if (fuelLevelValid === "Empty") {
-        alert('fuel level must contain valid input');
-        return false;
-    }
-    if (cargoMassValid === "Not a Number") {
-        alert('cargo mass must be a number');
-        return false;
-    }
-    if (cargoMassValid === "Empty") {
-        alert('cargo mass must contain valid input');
-        return false;
-    }
-
-
-    //track shuttle readiness
-    isReady = true;
-
-    //function to update the launch status text and color and make faultyItems visible
-    //i was having trouble figuring out how to get this to work until i put it in as a nested function. the color changing to red would not pass the npm test
-    //returning isReady or !isReady was not working
-    function updateLaunchStatus(isReady) {
-        const launchStat = document.getElementById('launchStatus');
-        const faultyListVisible = document.getElementById('faultyItems')
-        if (isReady) {
-            launchStat.textContent = `Shuttle is Ready for Launch`;
-            launchStat.style.color = "green";
-            faultyListVisible.style.visibility = 'visible'
-        } else {
-            launchStat.textContent = `Shuttle Not Ready for Launch`;
-            launchStat.style.color = "red";
-            faultyListVisible.style.visibility = 'visible';
-        }
-    }
-
-    //check fuel and cargo levels and update the status accordingly
-    if (fuelLevelNum < 10000 && cargoMassNum > 10000) {
-        document.getElementById("fuelStatus").textContent = `Fuel level too low for launch`;
-        document.getElementById("cargoStatus").textContent = `Cargo mass too heavy for launch`;
-        updateLaunchStatus(!isReady);
-    } else if (fuelLevelNum < 10000 && cargoMassNum <= 10000) {
-        document.getElementById("fuelStatus").textContent = `Fuel level too low for launch`;
-        document.getElementById("cargoStatus").textContent = `Cargo mass low enough for launch`;
-        updateLaunchStatus(!isReady);
-    } else if (fuelLevelNum >= 10000 && cargoMassNum > 10000) {
-        document.getElementById("fuelStatus").textContent = `Fuel level high enough for launch`;
-        document.getElementById("cargoStatus").textContent = `Cargo mass too heavy for launch`;
-        updateLaunchStatus(!isReady);
+    if (fuelLevelNum < 10000) {
+        fuelStat = 'Fuel level too low for launch';
+        launchReady = false;
     } else {
-        document.getElementById("fuelStatus").textContent = `Fuel level high enough for launch`;
-        document.getElementById("cargoStatus").textContent = `Cargo mass low enough for launch`;
-        updateLaunchStatus(isReady)
-    };
+        fuelStat = 'Fuel level high enough for launch';
+    }
 
-    //update pilot and copilot status
+    if (cargoMassNum > 10000) {
+        cargoStat = 'Cargo mass too heavy for launch';
+        launchReady = false;
+    } else {
+        cargoStat = 'Cargo mass low enough for launch';
+    }
+
     document.getElementById('pilotStatus').textContent = `Pilot ${pilot} is ready for launch`;
     document.getElementById('copilotStatus').textContent = `Co-pilot ${copilot} is ready for launch`;
+    document.getElementById("fuelStatus").textContent = fuelStat;
+    document.getElementById("cargoStatus").textContent = cargoStat;
+    updateLaunchStatus(document, launchReady);
+}
 
-};
+// function to update the launch status text and color and make faultyItems visible
+function updateLaunchStatus(document, launchReady) {
+    const launchStat = document.getElementById('launchStatus');
+    const faultyListVisible = document.getElementById('faultyItems');
+    if (!launchReady) {
+        launchStat.textContent = `Shuttle Not Ready for Launch`;
+        launchStat.style.color = "red";
+        faultyListVisible.style.visibility = 'visible';
+
+    } else {
+        launchStat.textContent = `Shuttle is Ready for Launch`;
+        launchStat.style.color = "green";
+        faultyListVisible.style.visibility = 'visible'
+    }
+
+}
 
 //fetch the planet data from the url using fetch
 //await the response and parse it to JSON using response.json()
